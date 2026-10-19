@@ -1,0 +1,12 @@
+.env
+.env.*
+!.env.example
+*.dump
+*.backup
+__pycache__/
+node_modules/
+.backend-private/
+dist/
+test-results/
+playwright-report/
+.wrangler/

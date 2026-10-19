@@ -1,0 +1,7 @@
+:root { font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
+body { margin: 0; }
+* { box-sizing: border-box; }
+a.record-link { color: #2a4e64; text-decoration: none; font-weight: 550; }
+a.record-link:hover { text-decoration: underline; }
+:focus-visible { outline: 3px solid #d39139; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; } }
