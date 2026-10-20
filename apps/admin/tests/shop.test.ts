@@ -22,5 +22,6 @@ describe('service shop metadata',()=>{
   const saved=servicePayload({slug:'bedroom',name_fr:'Chambre',name_en:'Bedroom',description_fr:'Test',description_en:'Test',icon_key:'bed',shop_enabled:true,change_reason:'Synthetic change',amount_minor:1,role:'admin'});
   expect(saved.icon_key).toBe('bed');expect(saved.shop_enabled).toBe(true);
   expect(saved).not.toHaveProperty('amount_minor');expect(saved).not.toHaveProperty('role');
+  expect(shopServicePayload({excluded_fr:null,excluded_en:null})).toEqual({excluded_fr:'',excluded_en:''});
  });
 });

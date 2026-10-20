@@ -21,6 +21,8 @@ export function shopServicePayload(data: Record<string, unknown>): Record<string
       if (['min_quantity','quantity_step'].includes(key) && value === 0) throw new Error('shop.invalid');
     }
     if (key.endsWith('_fr') || key.endsWith('_en')) {
+      // React-Admin parses a cleared text input as null; optional copy is stored as empty text.
+      if (value === null) { result[key] = ''; continue; }
       if (typeof value !== 'string' || value.length > 10000) throw new Error('shop.invalid');
     }
     if (key === 'included_task_ids' && (!Array.isArray(value) || value.length > 100 || value.some(id => typeof id !== 'string' || !/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(id)))) throw new Error('shop.invalid');
