@@ -17,9 +17,9 @@ describe('server-aligned admin capabilities', () => {
     expect(safeSearch('Équipe Azur')).toBe('Équipe Azur');
     expect(safeSearch({})).toBe('');
   });
-  it('whitelists content fields and leaves prices and publishing unchanged', () => {
-    const data = { slug: 'test-cleaning', name_fr: ' Test ', name_en: 'Test', description_fr: 'Description', description_en: 'Description', status: 'published', amount_minor: 0 };
-    expect(servicePayload(data)).toEqual({ slug: 'test-cleaning', name_fr: 'Test', name_en: 'Test', description_fr: 'Description', description_en: 'Description' });
+  it('whitelists service content and audited availability without accepting prices', () => {
+    const data = { slug: 'test-cleaning', name_fr: ' Test ', name_en: 'Test', description_fr: 'Description', description_en: 'Description', status: 'published', amount_minor: 0, change_reason:'Test change' };
+    expect(servicePayload(data)).toEqual({ slug: 'test-cleaning', name_fr: 'Test', name_en: 'Test', description_fr: 'Description', description_en: 'Description',status:'published',change_reason:'Test change' });
     expect(() => servicePayload({ ...data, slug: 'Bad Slug' })).toThrow('app.errors.invalidSlug');
     expect(() => servicePayload({ ...data, name_en: '' })).toThrow('app.errors.invalidService');
   });

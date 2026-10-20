@@ -1,5 +1,5 @@
 import { Chip, Typography, Box, Button, ToggleButtonGroup, ToggleButton } from '@mui/material';
-import { useLocaleState, useRecordContext, useTranslate } from 'react-admin';
+import { ReferenceField, TextField, useLocaleState, useRecordContext, useTranslate } from 'react-admin';
 import { useEffect } from 'react';
 
 export function LanguageSwitch() {
@@ -37,8 +37,14 @@ export function RecordField({ source, detail = false }: { source: string; label?
   const [locale] = useLocaleState();
   const t = useTranslate();
   const value = record?.[source];
+  if (value && ['service_id','parent_id','child_id','component_id','cleaning_type_id','frequency_id','area_id'].includes(source)) {
+    const reference = source==='service_id' ? 'services' : source==='area_id' ? 'service_areas' : 'catalog_components';
+    return <ReferenceField source={source} reference={reference} link="show"><TextField source={source==='area_id'?'label':locale==='en'?'name_en':'name_fr'} /></ReferenceField>;
+  }
   if (source === 'status' || source.endsWith('_status') || source === 'environment' || source === 'result') return <Status value={value} />;
   if (value === null || value === undefined || value === '') return <Typography variant="body2" color="text.secondary">—</Typography>;
+  if (source==='percentage_bps' && typeof value==='number') return <Typography variant="body2">{new Intl.NumberFormat(locale==='fr'?'fr-CA':'en-CA',{style:'percent',maximumFractionDigits:2}).format(value/10000)}</Typography>;
+  if (['kind','unit','relation','pricing_mode','payer','fee_mode','basis'].includes(source) && typeof value==='string') return <Typography variant="body2">{t(`billing.choices.${value}`,{_:value})}</Typography>;
   if (source.endsWith('_minor')) return <Typography variant="body2" sx={{ fontWeight: 650, whiteSpace: 'nowrap' }}>{money(value, record?.currency ?? 'CAD', locale)}</Typography>;
   if (typeof value === 'boolean') return <Chip size="small" label={t(value ? 'app.yes' : 'app.no')} variant="outlined" />;
   if (typeof value === 'object') return <Box component="pre" sx={{ fontSize: 12, whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', bgcolor: '#f5f7f8', p: 2, borderRadius: 2 }}>{JSON.stringify(value, null, 2)}</Box>;

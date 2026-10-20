@@ -1,5 +1,5 @@
 import { HttpError, type DataProvider } from 'react-admin';
-import { isResource, resources, safeSearch, servicePayload } from '@wafou/domain';
+import { isResource, resources, safeSearch, servicePayload, isBillingResource, billingPayload } from '@wafou/domain';
 import { supabase } from './supabase';
 
 function definition(resource: string) {
@@ -8,7 +8,26 @@ function definition(resource: string) {
 }
 function fail(error: { code?: string; message: string; status?: number }): never {
   const status = error.code === '42501' ? 403 : error.code === 'P0002' ? 404 : error.code === '23505' || error.code === '40001' ? 409 : error.status ?? 400;
-  throw new HttpError(status === 409 ? 'app.errors.conflict' : status === 403 ? 'app.errors.accessDenied' : 'app.errors.requestFailed', status);
+  const billingCodes = ['ACTIVE_DEPENDENCIES', 'INACTIVE_COMPONENT', 'INVALID_COMPONENT_REFERENCE', 'INVALID_PRICING_UNIT', 'CHANGE_REASON_REQUIRED', 'BILINGUAL_NAME_REQUIRED', 'AMBIGUOUS_RULE', 'CONFLICTING_TASK_SCOPE', 'IMMUTABLE_SCOPE', 'IDEMPOTENCY_CONFLICT'];
+  throw new HttpError(billingCodes.includes(error.message) ? `billing.errors.${error.message}` : error.code === '22023' || error.code === '23514' || error.code === '23502' ? 'billing.errors.invalid' : status === 409 ? 'app.errors.conflict' : status === 403 ? 'app.errors.accessDenied' : 'app.errors.requestFailed', status);
+}
+
+// Retain a key only for an uncertain transport outcome; known validation failures can be corrected.
+const pendingWrites = new Map<string, string>();
+async function saveBilling(resource: string, data: Record<string, unknown>, id?: unknown, version?: unknown) {
+  if (!isBillingResource(resource)) throw new HttpError('app.errors.readOnly', 403);
+  const body = { p_resource: resource, p_data: billingPayload(resource, data), p_id: id ?? null,
+    p_expected_version: version ?? null, p_reason: String(data.change_reason).trim() };
+  const fingerprint = JSON.stringify(body);
+  const requestId = pendingWrites.get(fingerprint) ?? crypto.randomUUID();
+  pendingWrites.set(fingerprint, requestId);
+  const { data: record, error } = await supabase.rpc('admin_save_billing', { ...body, p_request_id: requestId });
+  if (error) {
+    if (error.code && error.code !== 'PGRST000' && error.code !== 'PGRST001') pendingWrites.delete(fingerprint);
+    fail(error);
+  }
+  pendingWrites.delete(fingerprint);
+  return { data: record };
 }
 function selectColumns(resource: string): string {
   const def = definition(resource);
@@ -53,12 +72,14 @@ export const dataProvider = {
     return getList(resource, { ...params, filter: { ...params.filter, [params.target]: params.id } });
   },
   async create(resource, { data }) {
+    if (isBillingResource(resource)) return saveBilling(resource, data);
     if (resource !== 'services') throw new HttpError('app.errors.readOnly', 403);
     const { data: record, error } = await supabase.rpc('admin_save_service', { p_data: servicePayload(data) });
     if (error) fail(error);
     return { data: record };
   },
   async update(resource, { id, data, previousData }) {
+    if (isBillingResource(resource)) return saveBilling(resource, data, id, previousData?.version);
     if (resource !== 'services') throw new HttpError('app.errors.readOnly', 403);
     const { data: record, error } = await supabase.rpc('admin_save_service', {
       p_data: servicePayload(data), p_id: id, p_expected_version: previousData.version,

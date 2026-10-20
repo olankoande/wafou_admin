@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { Admin, Resource, defaultTheme } from 'react-admin';
-import { resources } from '@wafou/domain';
+import { Admin, CustomRoutes, Resource, defaultTheme } from 'react-admin';
+import { Route } from 'react-router-dom';
+import { resources, isBillingResource, billingResources } from '@wafou/domain';
 import { authProvider } from './authProvider';
 import { dataProvider } from './dataProvider';
 import { i18nProvider } from './i18n';
@@ -10,6 +11,7 @@ import { AdminLogin } from './Login';
 import { Dashboard } from './Dashboard';
 import { ResourceList, ResourceShow, ServiceCreate, ServiceEdit } from './ResourceViews';
 import './styles.css';
+import { BillingCreate, BillingEdit, PricingPreview } from './BillingForms';
 
 const theme = {
   ...defaultTheme,
@@ -28,7 +30,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode>
   <Admin title="WAFOU" authProvider={authProvider} dataProvider={dataProvider} i18nProvider={i18nProvider}
     dashboard={Dashboard} layout={AdminLayout} loginPage={AdminLogin} theme={theme} darkTheme={null} requireAuth disableTelemetry>
     {Object.keys(resources).map(name => <Resource key={name} name={name} list={ResourceList} show={ResourceShow}
-      create={name === 'services' ? ServiceCreate : undefined} edit={name === 'services' ? ServiceEdit : undefined}
-      recordRepresentation={name === 'profiles' ? 'display_name' : name === 'services' ? 'name_fr' : 'id'} />)}
+      create={name === 'services' ? ServiceCreate : isBillingResource(name) && billingResources[name].manage ? BillingCreate : undefined}
+      edit={name === 'services' ? ServiceEdit : isBillingResource(name) && billingResources[name].manage ? BillingEdit : undefined}
+      recordRepresentation={name === 'profiles' ? 'display_name' : name === 'services' || ['catalog_components','catalog_rates','platform_fee_rules'].includes(name) ? 'name_fr' : 'id'} />)}
+    <CustomRoutes><Route path="pricing-preview" element={<PricingPreview />} /></CustomRoutes>
   </Admin>
 </React.StrictMode>);

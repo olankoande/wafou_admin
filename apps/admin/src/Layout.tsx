@@ -15,6 +15,7 @@ function AdminMenu() {
   const { permissions = [] } = usePermissions<string[]>();
   return <Menu sx={{ mt: 2, px: 1.5 }}>
     <Menu.DashboardItem primaryText={t('app.overview')} />
+    {permissions.includes('catalog.read') && permissions.includes('finance.read') && <Menu.Item to="/pricing-preview" primaryText={t('billing.preview')} leftIcon={<AccountBalanceWalletOutlined fontSize="small" />} />}
     {Object.entries(icons).map(([group, Icon]) => {
       const entries = (Object.keys(resources) as ResourceName[]).filter(key => resources[key].group === group && permissions.includes(resources[key].permission));
       if (!entries.length) return null;

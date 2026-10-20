@@ -1,6 +1,6 @@
 import { Alert, Box, Typography } from '@mui/material';
-import { Create, Datagrid, Edit, EditButton, List, SearchInput, Show, SimpleForm, SimpleShowLayout, TextInput, required, usePermissions, useResourceContext, useTranslate } from 'react-admin';
-import { isResource, resources } from '@wafou/domain';
+import { Create, Datagrid, Edit, EditButton, List, SearchInput, SelectInput, Show, SimpleForm, SimpleShowLayout, TextInput, required, usePermissions, useResourceContext, useTranslate, Toolbar, SaveButton } from 'react-admin';
+import { isResource, resources, mayAccess } from '@wafou/domain';
 import { RecordField } from './components';
 
 function useDefinition() {
@@ -12,7 +12,7 @@ export function ResourceList() {
   const { resource, def } = useDefinition();
   const t = useTranslate();
   const { permissions = [] } = usePermissions<string[]>();
-  const canEdit = resource === 'services' && permissions.includes('catalog.manage');
+  const canEdit = mayAccess(permissions, resource, 'edit');
   return <Box sx={{ pb: 3 }}>
     <Typography component="h1" variant="h4" sx={{ mt: 1, mb: 1, fontWeight: 700, letterSpacing: -.8 }}>{t(`resources.${resource}.name`)}</Typography>
     {!canEdit && <Typography variant="body2" color="text.secondary" sx={{ mb: 2.5, maxWidth: 740 }}>{t('app.readOnly')}</Typography>}
@@ -35,13 +35,15 @@ export function ResourceShow() {
 }
 function ServiceForm() {
   const t = useTranslate();
-  return <SimpleForm sx={{ p: { xs: 2, md: 4 }, maxWidth: 950 }}>
-    <Alert severity="info" sx={{ mb: 3 }}>{t('app.serviceNotice')}</Alert>
+  return <SimpleForm toolbar={<Toolbar><SaveButton /></Toolbar>} sx={{ p: { xs: 2, md: 4 }, maxWidth: 950 }}>
+    <Alert severity="info" sx={{ mb: 3 }}>{t('billing.configurationNotice')}</Alert>
     <TextInput source="slug" label={t('app.fields.slug')} validate={required()} fullWidth />
     <TextInput source="name_fr" label={t('app.fields.name_fr')} validate={required()} fullWidth />
     <TextInput source="name_en" label={t('app.fields.name_en')} validate={required()} fullWidth />
     <TextInput source="description_fr" label={t('app.fields.description_fr')} validate={required()} multiline minRows={3} fullWidth />
     <TextInput source="description_en" label={t('app.fields.description_en')} validate={required()} multiline minRows={3} fullWidth />
+    <SelectInput source="status" label={t('app.fields.status')} choices={['draft','published','archived'].map(id=>({id,name:t(id==='published'?'app.states.published':`billing.choices.${id}`)}))} fullWidth />
+    <TextInput source="change_reason" label={t('billing.fields.change_reason')} validate={required()} fullWidth />
   </SimpleForm>;
 }
 export function ServiceCreate() { const t = useTranslate(); return <Create title={t('app.serviceNew')} redirect="show"><ServiceForm /></Create>; }

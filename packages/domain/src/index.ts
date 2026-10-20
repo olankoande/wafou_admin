@@ -1,3 +1,5 @@
+import { billingResources, isBillingResource } from './billing';
+export * from './billing';
 export const resources = {
   profiles: { permission: 'accounts.read', group: 'people', fields: ['display_name', 'locale', 'account_status', 'created_at'], search: ['display_name'], detail: ['user_id', 'phone', 'version'] },
   provider_profiles: { permission: 'providers.read', group: 'people', fields: ['user_id', 'verification_status', 'created_at'], search: ['bio_fr', 'bio_en'], detail: ['bio_fr', 'bio_en', 'agenda_version'], select: 'id,created_at,updated_at,version,user_id,bio_fr,bio_en,verification_status,agenda_version' },
@@ -17,6 +19,7 @@ export const resources = {
   disputes: { permission: 'disputes.read', group: 'support', fields: ['booking_id', 'kind', 'status', 'created_at'], search: ['description'], detail: ['opened_by', 'description', 'decision', 'resolved_by'] },
   support_conversations: { permission: 'support.read', group: 'support', fields: ['conversation_id', 'user_id', 'status', 'created_at'], search: ['conversation_id'], detail: ['booking_id', 'account_id'] },
   audit_logs: { permission: 'audit.read', group: 'system', fields: ['action', 'target_type', 'result', 'created_at'], search: ['action', 'target_type'], detail: ['actor_id', 'actor_type', 'target_id', 'reason', 'correlation_id'] },
+  ...billingResources,
 } as const;
 
 export type ResourceName = keyof typeof resources;
@@ -25,6 +28,10 @@ export function isResource(value: string): value is ResourceName { return Object
 export function mayAccess(permissions: readonly string[], resource: string, action: string): boolean {
   if (!isResource(resource)) return false;
   if (action === 'list' || action === 'show') return permissions.includes(resources[resource].permission);
+  if (isBillingResource(resource)) {
+    const manage = billingResources[resource].manage;
+    return Boolean(manage && (action === 'create' || action === 'edit') && permissions.includes(manage));
+  }
   return resource === 'services' && (action === 'create' || action === 'edit') && permissions.includes('catalog.manage');
 }
 export function safeSearch(value: unknown): string {
@@ -38,5 +45,11 @@ export function servicePayload(data: Record<string, unknown>): Record<string, st
     result[field] = value.trim();
   }
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(result.slug)) throw new Error('app.errors.invalidSlug');
+  if (data.status !== undefined && data.status !== null) {
+    if (typeof data.status !== 'string' || !['draft','published','archived'].includes(data.status)) throw new Error('app.errors.invalidService');
+    result.status=data.status;
+  }
+  if (typeof data.change_reason !== 'string' || data.change_reason.trim().length<3 || data.change_reason.trim().length>1000) throw new Error('billing.errors.reason');
+  result.change_reason=data.change_reason.trim();
   return result;
 }
