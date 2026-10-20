@@ -23,6 +23,9 @@ export const authProvider: AuthProvider = {
   },
   async checkError(error) {
     if (error?.status === 401) { await supabase.auth.signOut(); throw new Error('app.errors.sessionExpired'); }
+    if (error?.status === 403) {
+      try { await adminSession(); } catch { await supabase.auth.signOut(); throw new Error('app.errors.accessDenied'); }
+    }
   },
   async getIdentity() {
     const session = await adminSession();

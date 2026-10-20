@@ -3,6 +3,7 @@ import frenchMessages from 'ra-language-french';
 import englishMessages from 'ra-language-english';
 import { resources } from '@wafou/domain';
 import { billingMessages, billingResourceNames } from './billingI18n';
+import { accountMessages } from './accountI18n';
 
 const names = {
   fr: ['Utilisateurs', 'Prestataires', 'Services', 'Zones de service', 'Demandes', 'Devis', 'Attributions', 'Réservations', 'Missions', 'Paiements', 'Remboursements', 'Transferts', 'Versements', 'Mouvements financiers', 'Avis', 'Litiges', 'Conversations', 'Journal d’audit'],
@@ -33,6 +34,6 @@ const app = {
 
 export const i18nProvider = polyglotI18nProvider(locale => {
   const selected = locale === 'en' ? 'en' : 'fr';
-  return { ...(selected === 'fr' ? frenchMessages : englishMessages), billing: billingMessages[selected], app: { ...app[selected], fields: {...fields[selected],...billingMessages[selected].fields} },
+  return { ...(selected === 'fr' ? frenchMessages : englishMessages), accounts:accountMessages[selected], billing: billingMessages[selected], app: { ...app[selected], states:{...app[selected].states,suspended:accountMessages[selected].suspended}, fields: {...fields[selected],...billingMessages[selected].fields} },
     resources: Object.fromEntries(Object.keys(resources).map((key, index) => [key, { name: billingResourceNames[selected][key] ?? names[selected][index] }])) };
 }, localStorage.getItem('wafou-admin-locale') === 'en' ? 'en' : 'fr');

@@ -8,6 +8,8 @@ Le déploiement Cloudflare est reporté à la demande du responsable. Aucun site
 
 Le [guide du catalogue et des frais](docs/ADMIN_BILLING.md) décrit les écrans, droits, migrations nécessaires et limites de la simulation. Aucun tarif commercial ni taux de frais n'est prérempli ; aucune taxe ou opération Stripe n'est activée par cette configuration.
 
+Les administrateurs habilités peuvent [activer et désactiver les comptes WAFOU](docs/ADMIN_ACCOUNTS.md) depuis la liste ou la fiche utilisateur, avec confirmation, motif et audit.
+
 Prérequis : Node compatible avec `engines` dans `package.json` et pnpm 9.15.4.
 
 ```sh

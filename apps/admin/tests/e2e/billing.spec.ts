@@ -20,7 +20,7 @@ async function session(page:Page,permissions=['catalog.read','catalog.manage','f
   else if(url.pathname==='/rest/v1/services') body=[{id:serviceId,name_fr:'Ménage test',name_en:'Test cleaning',created_at:new Date().toISOString()}];
   else if(url.pathname==='/rest/v1/catalog_components') body=[{id:savedId,service_id:serviceId,name_fr:'Chambre test',name_en:'Test bedroom',kind:'room',status:'draft'}];
   else if(url.pathname==='/rest/v1/platform_fee_rules') body=req.headers().accept?.includes('vnd.pgrst.object')?saved:[saved];
-  await route.fulfill({status:200,contentType:'application/json',headers:{'access-control-allow-origin':'*','content-range':'0-0/1'},body:JSON.stringify(body)});
+  await route.fulfill({status:200,contentType:'application/json',headers:{'access-control-allow-origin':'*','access-control-expose-headers':'Content-Range','content-range':'0-0/1'},body:JSON.stringify(body)});
  });
  await page.goto('/');
  await page.getByLabel('Adresse email').fill(user.email);
