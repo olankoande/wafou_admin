@@ -1,0 +1,26 @@
+export const shopMessages = {
+ fr:{
+  preview:'Simulation du panier de services',shopMode:'Boutique de services',legacyMode:'Ancien simulateur par pièces',items:'Services du panier',options:'Options de ce service',individual:'Service individuel',bundle:'Forfait de services',cardPreview:'Aperçu de la fiche',
+  invalid:'Vérifiez l’icône, l’unité, les quantités et la composition du forfait.',
+  errors:{INVALID_BUNDLE:'Vérifiez les services du forfait et leurs quantités ; chaque service doit être individuel et proposé en boutique.',NESTED_BUNDLE:'Un service compris dans un forfait ne peut pas devenir lui-même un forfait.',INACTIVE_BUNDLE_MEMBER:'Publiez les services compris avant de publier ce forfait.',INCOMPLETE_SHOP_SERVICE:'Complétez les prestations comprises en FR/EN et, pour un forfait, sa liste de services.'},
+  tasksAfterSave:'Enregistrez le service, puis créez ses tâches et options dans le catalogue. Vous pourrez ensuite sélectionner ses tâches comprises ici.',
+  bundleHelp:'Un forfait contient des services individuels avec leurs quantités. Les forfaits imbriqués ne sont pas pris en charge. Pour un service individuel, laissez cette liste vide.',
+  pricingHelp:'Le prix fixe d’un service est multiplié par sa quantité. Les quantités des options sont les totaux de la ligne. Chaque règle de frais est appliquée une seule fois sur son périmètre.',
+  hoursHelp:'Pour un service horaire : unité Heure, quantité et nombre d’heures identiques. Aucune durée automatique.',
+  fields:{shop_enabled:'Proposer en boutique',offer_kind:'Type d’offre',icon_key:'Icône du service',included_fr:'Prestations comprises (FR)',included_en:'Prestations comprises (EN)',excluded_fr:'Prestations exclues (FR)',excluded_en:'Prestations exclues (EN)',included_task_ids:'Tâches comprises dans le service',bundle_items:'Services compris dans le forfait'},
+  icons:{cleaning:'Ménage',home:'Maison',sofa:'Salon / canapé',bed:'Chambre / lit',kitchen:'Cuisine',bathroom:'Salle de bain',toilet:'Toilettes',office:'Bureau',stairs:'Escalier',laundry:'Linge',oven:'Four',fridge:'Réfrigérateur',window:'Vitres',dishes:'Vaisselle',package:'Forfait'},
+  issues:{SERVICE_UNAVAILABLE:'Un service ou un élément du forfait est indisponible ou incomplet.',SERVICE_CHANGED:'Une fiche de service a changé. Relisez le panier.',SERVICE_ALREADY_INCLUDED:'Une prestation est déjà comprise dans un forfait sélectionné.',INVALID_PRICING_UNIT:'L’unité du tarif ne correspond pas à celle du service ou de l’option.'},
+ },
+ en:{
+  preview:'Service cart simulation',shopMode:'Service shop',legacyMode:'Previous room simulator',items:'Cart services',options:'Options for this service',individual:'Individual service',bundle:'Service package',cardPreview:'Service card preview',
+  invalid:'Check the icon, unit, quantities and package contents.',
+  errors:{INVALID_BUNDLE:'Check the package services and quantities; each member must be an individual shop service.',NESTED_BUNDLE:'A service included in a package cannot itself become a package.',INACTIVE_BUNDLE_MEMBER:'Publish included services before publishing the package.',INCOMPLETE_SHOP_SERVICE:'Complete included work in FR/EN and the service list for a package.'},
+  tasksAfterSave:'Save the service, then create its tasks and options in the catalogue. You can then select its included tasks here.',
+  bundleHelp:'A package contains individual services and their quantities. Nested packages are not supported. Leave this list empty for an individual service.',
+  pricingHelp:'A service’s fixed price is multiplied by its quantity. Option quantities are line totals. Each fee rule is applied once over its scope.',
+  hoursHelp:'For hourly services: select Hour and enter matching quantity and hours. No automatic duration.',
+  fields:{shop_enabled:'Offer in shop',offer_kind:'Offer type',icon_key:'Service icon',included_fr:'Included work (FR)',included_en:'Included work (EN)',excluded_fr:'Excluded work (FR)',excluded_en:'Excluded work (EN)',included_task_ids:'Tasks included in the service',bundle_items:'Services included in the package'},
+  icons:{cleaning:'Cleaning',home:'Home',sofa:'Living room / sofa',bed:'Bedroom / bed',kitchen:'Kitchen',bathroom:'Bathroom',toilet:'Toilet',office:'Office',stairs:'Stairs',laundry:'Laundry',oven:'Oven',fridge:'Refrigerator',window:'Windows',dishes:'Dishes',package:'Package'},
+  issues:{SERVICE_UNAVAILABLE:'A service or package member is unavailable or incomplete.',SERVICE_CHANGED:'A service has changed. Review the cart.',SERVICE_ALREADY_INCLUDED:'A service is already included in a selected package.',INVALID_PRICING_UNIT:'The rate unit does not match the service or option unit.'},
+ },
+};

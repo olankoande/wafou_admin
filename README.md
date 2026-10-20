@@ -1,5 +1,7 @@
 # WAFOU
 
+La boutique de services, ses icônes, forfaits et règles de panier sont décrits dans le [guide admin boutique](docs/ADMIN_SHOP.md).
+
 ## Module admin — publication GitHub du 19 octobre 2026
 
 Ce dépôt publie `apps/admin` et son package partagé `packages/domain`, en conservant l'organisation monorepo pnpm. Le module utilise React-Admin, Vite et TypeScript, avec authentification Supabase et permissions contrôlées côté serveur. L'admin permet de paramétrer les services, pièces, options, tâches, tarifs et frais de plateforme, de consulter leurs versions et de simuler un prix avant taxes. Les autres ressources métier restent consultables selon habilitation.

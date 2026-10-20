@@ -11,7 +11,8 @@ import { AdminLogin } from './Login';
 import { Dashboard } from './Dashboard';
 import { ResourceList, ResourceShow, ServiceCreate, ServiceEdit } from './ResourceViews';
 import './styles.css';
-import { BillingCreate, BillingEdit, PricingPreview } from './BillingForms';
+import { BillingCreate, BillingEdit } from './BillingForms';
+import { ShopPricingPreview } from './ShopPricingPreview';
 
 const theme = {
   ...defaultTheme,
@@ -33,6 +34,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode>
       create={name === 'services' ? ServiceCreate : isBillingResource(name) && billingResources[name].manage ? BillingCreate : undefined}
       edit={name === 'services' ? ServiceEdit : isBillingResource(name) && billingResources[name].manage ? BillingEdit : undefined}
       recordRepresentation={name === 'profiles' ? 'display_name' : name === 'services' || ['catalog_components','catalog_rates','platform_fee_rules'].includes(name) ? 'name_fr' : 'id'} />)}
-    <CustomRoutes><Route path="pricing-preview" element={<PricingPreview />} /></CustomRoutes>
+    <CustomRoutes><Route path="pricing-preview" element={<ShopPricingPreview />} /></CustomRoutes>
   </Admin>
 </React.StrictMode>);

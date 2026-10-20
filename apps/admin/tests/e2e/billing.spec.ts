@@ -62,6 +62,7 @@ test('financial reader cannot create or edit fee configurations',async({page})=>
 test('pricing preview reports missing configuration without saving data',async({page})=>{
  const writes=await session(page);
  await page.getByRole('menuitem',{name:'Simulation de prix',exact:true}).click();
+ await page.getByRole('button',{name:'Ancien simulateur par pièces',exact:true}).click();
  await select(page,'Service','Ménage test');
  await select(page,'Type de ménage','Chambre test');
  await page.getByRole('button',{name:'Ajouter',exact:true}).click();

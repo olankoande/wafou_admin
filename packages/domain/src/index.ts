@@ -1,10 +1,12 @@
 import { billingResources, isBillingResource } from './billing';
+import { shopServicePayload } from './shop';
+export * from './shop';
 export * from './billing';
 export * from './accounts';
 export const resources = {
   profiles: { permission: 'accounts.read', group: 'people', fields: ['display_name', 'locale', 'account_status', 'created_at'], search: ['display_name'], detail: ['user_id', 'phone', 'version'] },
   provider_profiles: { permission: 'providers.read', group: 'people', fields: ['user_id', 'verification_status', 'created_at'], search: ['bio_fr', 'bio_en'], detail: ['bio_fr', 'bio_en', 'agenda_version'], select: 'id,created_at,updated_at,version,user_id,bio_fr,bio_en,verification_status,agenda_version' },
-  services: { permission: 'catalog.read', group: 'catalog', fields: ['name_fr', 'name_en', 'status', 'created_at'], search: ['name_fr', 'name_en', 'slug'], detail: ['slug', 'description_fr', 'description_en', 'pricing_mode', 'version'] },
+  services: { permission: 'catalog.read', group: 'catalog', fields: ['icon_key', 'name_fr', 'name_en', 'status', 'shop_enabled'], search: ['name_fr', 'name_en', 'slug'], detail: ['slug', 'description_fr', 'description_en', 'offer_kind', 'unit', 'min_quantity', 'max_quantity', 'quantity_step', 'sort_order', 'included_fr', 'included_en', 'excluded_fr', 'excluded_en', 'included_task_ids', 'bundle_items', 'version', 'created_at'] },
   service_areas: { permission: 'catalog.read', group: 'catalog', fields: ['label', 'code', 'active', 'created_at'], search: ['label', 'code'], detail: ['definition'] },
   service_requests: { permission: 'requests.read', group: 'operations', fields: ['client_id', 'service_id', 'status', 'requested_start'], search: [], detail: ['address_id', 'requested_end', 'timezone', 'needs', 'version'] },
   quotes: { permission: 'requests.read', group: 'operations', fields: ['request_id', 'revision', 'amount_minor', 'status'], search: [], detail: ['currency', 'line_items', 'valid_until', 'author_id'] },
@@ -38,19 +40,19 @@ export function mayAccess(permissions: readonly string[], resource: string, acti
 export function safeSearch(value: unknown): string {
   return typeof value === 'string' ? value.replace(/[^\p{L}\p{N}\s@.-]/gu, ' ').trim().slice(0, 200) : '';
 }
-export function servicePayload(data: Record<string, unknown>): Record<string, string> {
-  const result: Record<string, string> = {};
+export function servicePayload(data: Record<string, unknown>): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
   for (const field of ['slug', 'name_fr', 'name_en', 'description_fr', 'description_en']) {
     const value = data[field];
     if (typeof value !== 'string' || !value.trim()) throw new Error('app.errors.invalidService');
     result[field] = value.trim();
   }
-  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(result.slug)) throw new Error('app.errors.invalidSlug');
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(String(result.slug))) throw new Error('app.errors.invalidSlug');
   if (data.status !== undefined && data.status !== null) {
     if (typeof data.status !== 'string' || !['draft','published','archived'].includes(data.status)) throw new Error('app.errors.invalidService');
     result.status=data.status;
   }
   if (typeof data.change_reason !== 'string' || data.change_reason.trim().length<3 || data.change_reason.trim().length>1000) throw new Error('billing.errors.reason');
   result.change_reason=data.change_reason.trim();
-  return result;
+  return { ...result, ...shopServicePayload(data) };
 }

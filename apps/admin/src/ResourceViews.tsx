@@ -3,6 +3,7 @@ import { Create, Datagrid, Edit, EditButton, List, SearchInput, SelectInput, Sho
 import { isResource, resources, mayAccess } from '@wafou/domain';
 import { RecordField } from './components';
 import { AccountStatusAction } from './AccountStatusAction';
+import { ShopServiceFields } from './ShopServiceFields';
 
 function useDefinition() {
   const resource = useResourceContext();
@@ -38,13 +39,14 @@ export function ResourceShow() {
 }
 function ServiceForm() {
   const t = useTranslate();
-  return <SimpleForm toolbar={<Toolbar><SaveButton /></Toolbar>} sx={{ p: { xs: 2, md: 4 }, maxWidth: 950 }}>
+  return <SimpleForm defaultValues={{status:'draft',shop_enabled:true,offer_kind:'individual',icon_key:'cleaning',unit:'item',min_quantity:1,quantity_step:1,sort_order:0,included_task_ids:[],bundle_items:[]}} toolbar={<Toolbar><SaveButton /></Toolbar>} sx={{ p: { xs: 2, md: 4 }, maxWidth: 950 }}>
     <Alert severity="info" sx={{ mb: 3 }}>{t('billing.configurationNotice')}</Alert>
     <TextInput source="slug" label={t('app.fields.slug')} validate={required()} fullWidth />
     <TextInput source="name_fr" label={t('app.fields.name_fr')} validate={required()} fullWidth />
     <TextInput source="name_en" label={t('app.fields.name_en')} validate={required()} fullWidth />
     <TextInput source="description_fr" label={t('app.fields.description_fr')} validate={required()} multiline minRows={3} fullWidth />
     <TextInput source="description_en" label={t('app.fields.description_en')} validate={required()} multiline minRows={3} fullWidth />
+    <ShopServiceFields />
     <SelectInput source="status" label={t('app.fields.status')} choices={['draft','published','archived'].map(id=>({id,name:t(id==='published'?'app.states.published':`billing.choices.${id}`)}))} fullWidth />
     <TextInput source="change_reason" label={t('billing.fields.change_reason')} validate={required()} fullWidth />
   </SimpleForm>;

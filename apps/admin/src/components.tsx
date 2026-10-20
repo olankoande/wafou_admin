@@ -1,6 +1,7 @@
 import { Chip, Typography, Box, Button, ToggleButtonGroup, ToggleButton } from '@mui/material';
 import { ReferenceField, TextField, useLocaleState, useRecordContext, useTranslate } from 'react-admin';
 import { useEffect } from 'react';
+import { ServiceIcon } from './ServiceIcon';
 
 export function LanguageSwitch() {
   const [locale, setLocale] = useLocaleState();
@@ -37,6 +38,8 @@ export function RecordField({ source, detail = false }: { source: string; label?
   const [locale] = useLocaleState();
   const t = useTranslate();
   const value = record?.[source];
+  if (source === 'icon_key') return <Box sx={{display:'flex',gap:1,alignItems:'center'}}><ServiceIcon value={value} />{detail && <Typography>{t(`shop.icons.${value}`,{_:t('shop.icons.cleaning')})}</Typography>}</Box>;
+  if (source === 'offer_kind') return <Typography>{t(`shop.${value}`,{_:String(value??'')})}</Typography>;
   if (value && ['service_id','parent_id','child_id','component_id','cleaning_type_id','frequency_id','area_id'].includes(source)) {
     const reference = source==='service_id' ? 'services' : source==='area_id' ? 'service_areas' : 'catalog_components';
     return <ReferenceField source={source} reference={reference} link="show"><TextField source={source==='area_id'?'label':locale==='en'?'name_en':'name_fr'} /></ReferenceField>;

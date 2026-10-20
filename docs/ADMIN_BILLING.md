@@ -1,5 +1,7 @@
 # Administration du catalogue, des tarifs et des frais
 
+Le modèle courant est une boutique : [guide boutique](ADMIN_SHOP.md). Les fiches disposent d'icônes, d'unités/quantités et de forfaits ; la simulation multi-services complète le simulateur historique décrit ci-dessous. Le forfait global historique vaut pour une composition, le prix fixe boutique vaut pour une unité d'offre. Les deux modes conservent leurs règles distinctes.
+
 ## Écrans disponibles
 
 - **Services** : contenu FR/EN, publication/retrait et motif de modification.
