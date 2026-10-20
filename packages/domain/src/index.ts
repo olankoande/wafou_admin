@@ -4,6 +4,7 @@ export * from './shop';
 export * from './billing';
 export * from './accounts';
 export * from './photos';
+export * from './availability';
 export const resources = {
   profiles: { permission: 'accounts.read', group: 'people', fields: ['display_name', 'locale', 'account_status', 'created_at'], search: ['display_name'], detail: ['user_id', 'phone', 'version'] },
   provider_profiles: { permission: 'providers.read', group: 'people', fields: ['user_id', 'verification_status', 'created_at'], search: ['bio_fr', 'bio_en'], detail: ['bio_fr', 'bio_en', 'agenda_version'], select: 'id,created_at,updated_at,version,user_id,bio_fr,bio_en,verification_status,agenda_version' },

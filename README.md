@@ -1,5 +1,7 @@
 # WAFOU
 
+Les [disponibilités prestataire](docs/PROVIDER_AVAILABILITY.md) disposent de commandes personnelles sécurisées et d’une consultation admin. L’écran de saisie de la future PWA reste à construire.
+
 La boutique de services, ses icônes, forfaits et règles de panier sont décrits dans le [guide admin boutique](docs/ADMIN_SHOP.md).
 
 La [revue du module admin](docs/ADMIN_REVIEW.md) décrit les corrections et les contrôles des écrans FR/EN et mobiles.

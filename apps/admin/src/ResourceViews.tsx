@@ -6,6 +6,7 @@ import { AccountStatusAction } from './AccountStatusAction';
 import { ShopServiceFields } from './ShopServiceFields';
 import { ServiceWorkspace } from './ServiceWorkspace';
 import {ProviderKyc,ProfilePhotoField} from './ProviderKyc';
+import {ProviderAvailability} from './ProviderAvailability';
 
 function useDefinition() {
   const resource = useResourceContext();
@@ -38,6 +39,7 @@ export function ResourceShow() {
   return <Show><SimpleShowLayout sx={{ p: { xs: 2, md: 4 }, maxWidth: 980 }}>
     {resource==='profiles'&&<ProfilePhotoField/>}
     {resource==='provider_profiles'&&<ProviderKyc/>}
+    {resource==='provider_profiles'&&<ProviderAvailability/>}
     {fields.map(source => <RecordField key={source} source={source} detail label={t(`app.fields.${source}`, { _: source })} />)}
     {resource==='profiles' && <AccountStatusAction />}
   </SimpleShowLayout></Show>;
