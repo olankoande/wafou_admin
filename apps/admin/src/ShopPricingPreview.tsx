@@ -6,6 +6,7 @@ import { PricingPreview } from './BillingForms';
 import { supabase } from './supabase';
 import { money } from './components';
 import { ServiceIcon } from './ServiceIcon';
+import { PreviewFormObserver, previewErrorMessage, usePreviewState } from './previewState';
 
 type Preview = {issues:string[];currency:string;pricing_complete:boolean;subtotal_minor:number|null;client_total_before_tax_minor:number|null;provider_net_before_tax_minor:number|null;
  items:{service:{id:string;name_fr:string;name_en:string;icon_key:string};quantity:number}[];
@@ -20,23 +21,23 @@ function ComponentChoice({source,serviceId,kind}:{source:string;serviceId?:strin
 }
 export function ShopPricingPreview() {
  const t=useTranslate(); const [locale]=useLocaleState(); const notify=useNotify(); const {permissions=[]}=usePermissions<string[]>();
- const [legacy,setLegacy]=useState(false); const [result,setResult]=useState<Preview|null>(null); const [loading,setLoading]=useState(false);
+ const [legacy,setLegacy]=useState(false); const {result,loading,invalidate,run}=usePreviewState<Preview>();
  if(!permissions.includes('catalog.read')||!permissions.includes('finance.read')) return <Alert severity="warning">{t('app.errors.accessDenied')}</Alert>;
  async function simulate(data:Record<string,unknown>) {
-  setLoading(true);setResult(null);
-  try {
+  await run(async()=>{
    const {data:preview,error}=await supabase.rpc('admin_shop_preview',{p_cart:data});
-   if(error) {notify(error.code==='42501'?'app.errors.accessDenied':'billing.errors.invalid',{type:'error'});return;}
-   setResult(preview as Preview);
-  } catch {notify('app.errors.requestFailed',{type:'error'});} finally {setLoading(false);}
+   if(error) throw error;
+   return preview as Preview;
+  },error=>notify(previewErrorMessage(error),{type:'error'}));
  }
  return <Box sx={{maxWidth:1050,pb:4}}>
-  <Button onClick={()=>setLegacy(value=>!value)} sx={{mb:2}}>{t(legacy?'shop.shopMode':'shop.legacyMode')}</Button>
+  <Button onClick={()=>{invalidate();setLegacy(value=>!value);}} sx={{mb:2}}>{t(legacy?'shop.shopMode':'shop.legacyMode')}</Button>
   {legacy?<PricingPreview />:<>
    <Typography variant="h4" component="h1" sx={{mb:2}}>{t('shop.preview')}</Typography>
    <Alert severity="info" sx={{mb:2}}>{t('billing.previewNotice')}</Alert>
    <Alert severity="info" sx={{mb:2}}>{t('shop.pricingHelp')}</Alert>
    <SimpleForm onSubmit={simulate} defaultValues={{items:[]}} toolbar={<Toolbar><SaveButton label={t('billing.simulate')} disabled={loading} alwaysEnable /></Toolbar>}>
+    <FormDataConsumer>{({formData})=><PreviewFormObserver data={formData} onChange={invalidate} />}</FormDataConsumer>
     <ArrayInput source="items" label={t('shop.items')} validate={required()}>
      <SimpleFormIterator resource="services">
       <ReferenceInput source="service_id" reference="services" filter={{shop_enabled:true}} perPage={100}>

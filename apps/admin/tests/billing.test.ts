@@ -31,5 +31,6 @@ describe('billing administration',()=>{
  it('normalises empty optional scopes and keeps existing stored minor units',()=>{
   const payload=billingPayload('catalog_rates',{service_id:undefined,component_id:'',amount_minor:1001,valid_until:'',change_reason:'Test update'});
   expect(payload).toEqual({component_id:null,amount_minor:1001,valid_until:null});
+  expect(billingPayload('catalog_components',{description_fr:null,equipment_en:null,change_reason:'Clear text'})).toEqual({description_fr:'',equipment_en:''});
  });
 });

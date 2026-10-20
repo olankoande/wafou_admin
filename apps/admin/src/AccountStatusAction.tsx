@@ -27,13 +27,13 @@ export function AccountStatusAction({label:_label}:{label?:string}) {
   try {
    const {error}=await supabase.rpc('admin_set_account_status',payload);
    if(error) {
-    if(error.code) pending.current=null;
+    if(error.code&&error.code!=='PGRST000'&&error.code!=='PGRST001') pending.current=null;
     const key=error.code==='40001'?'app.errors.conflict':error.code==='42501'?'app.errors.accessDenied':
      ['SELF_ACCOUNT_CHANGE_DENIED','ACCOUNT_STATE_NOT_MANAGEABLE','ACCOUNT_ALREADY_IN_STATE','IDEMPOTENCY_CONFLICT','CHANGE_REASON_REQUIRED'].includes(error.message)?`accounts.errors.${error.message}`:'app.errors.requestFailed';
     notify(key,{type:'error'});if(error.code==='40001') {setOpen(false);refresh();}return;
    }
    pending.current=null;setOpen(false);setReason('');notify('accounts.success',{type:'success'});refresh();
-  } finally {setSaving(false);}
+  } catch {notify('app.errors.requestFailed',{type:'error'});} finally {setSaving(false);}
  }
  return <>
   <Button size="small" color={next==='active'?'primary':'warning'} disabled={!permitted} title={!permitted?t('accounts.selfDenied'):undefined}

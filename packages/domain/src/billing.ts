@@ -46,6 +46,7 @@ export function billingPayload(resource: BillingResource, data: Record<string, u
     let value = data[key];
     if (key.endsWith('_minor') || key === 'percentage_bps') value = decimalToHundredths(value);
     else if (key.endsWith('_id') || key === 'unit' || key === 'valid_from' || key === 'valid_until') value = value === '' || value === undefined ? null : value;
+    else if ((key.startsWith('description_') || key.startsWith('equipment_')) && value === null) value = '';
     if (typeof value === 'number' && (!Number.isFinite(value) || value < 0)) throw new Error('billing.errors.number');
     result[key] = value;
   }

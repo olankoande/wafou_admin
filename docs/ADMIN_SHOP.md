@@ -18,6 +18,8 @@ Un forfait contient des services individuels et leurs quantités par unité de f
 
 Les options du panier sont des quantités totales pour la ligne, sans multiplication implicite par le nombre de services.
 
+La composition de forfait apparaît lorsque l'offre est un forfait. Si un forfait devient individuel, les membres encore présents restent visibles afin de pouvoir les retirer avant enregistrement.
+
 ## Tarifs et frais
 
 Dans **Tarifs des prestations**, choisir le service et laisser **Pièce ou option** vide pour son prix principal. Un prix fixe boutique vaut pour une unité d'offre et est multiplié par sa quantité. L'unité du tarif doit correspondre à celle de la fiche. Configurer les options séparément.
@@ -31,6 +33,8 @@ Les frais nécessitent `fees.manage`. Une règle globale s'applique une fois au 
 **Simulation de prix** ouvre le panier multi-services, sans type de ménage obligatoire. **Ancien simulateur par pièces** conserve l'outil précédent. Le nouveau serveur vérifie quantités, unités, disponibilité, options, recouvrements et frais. Les résultats contiennent les versions et snapshots des services, membres, tâches et règles.
 
 La simulation reste administrative : taxes non configurées, résultat non réservable, aucun paiement, notification ou nouvelle réservation. Les anciens engagements ne sont pas réécrits. La vérification de créneau, l'accord client et sa persistance restent à intégrer au futur parcours client.
+
+Modifier la composition efface le résultat précédent. Une réponse tardive concernant un ancien panier est ignorée : relancer la simulation pour obtenir les montants du panier courant.
 
 La RPC publique `shop_catalog()` fournit les fiches boutique publiées et disponibles, leurs icônes, composants actifs et tarifs actifs courants avec leurs périmètres. Elle exclut brouillons, frais prestataire et audit. Le futur frontend doit respecter les conditions zone/type/fréquence des tarifs ; une règle conditionnelle ne définit pas un prix universel.
 

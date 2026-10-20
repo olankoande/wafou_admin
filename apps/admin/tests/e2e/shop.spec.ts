@@ -78,3 +78,20 @@ test('catalogue reader cannot edit service shop metadata',async({page})=>{
  await expect(page.getByRole('link',{name:'Modifier',exact:true})).toHaveCount(0);
  expect(writes).toHaveLength(0);
 });
+
+test('catalogue reader cannot open service creation through a direct URL',async({page})=>{
+ const {writes}=await session(page,['catalog.read']);
+ await page.goto('/#/services/create');
+ await expect(page.getByText('Non autorisé',{exact:true})).toBeVisible();
+ await expect(page.getByRole('button',{name:'Enregistrer',exact:true})).toHaveCount(0);
+ expect(writes).toHaveLength(0);
+});
+
+test('logout closes the authenticated area and protects a direct finance link',async({page})=>{
+ await session(page);
+ await page.getByRole('button',{name:'Profil',exact:true}).click();
+ await page.getByRole('menuitem',{name:'Déconnexion',exact:true}).click();
+ await expect(page.getByLabel('Adresse email')).toBeVisible();
+ await page.goto('/#/payments');
+ await expect(page.getByLabel('Adresse email')).toBeVisible();
+});

@@ -40,6 +40,7 @@ export function AdminLayout(props: LayoutProps) {
     '& .RaMenuItemLink-root .MuiListItemIcon-root': { color: '#8eabb9', minWidth: 32 },
     '& .RaMenuItemLink-active': { bgcolor: '#2b4858', color: '#fff', borderLeft: '3px solid #eda750' },
     '& .RaMenuItemLink-active .MuiListItemIcon-root': { color: '#f3b465' },
+    '& .RaMenuItemLink-root.RaMenuItemLink-active .MuiTypography-root': { color: '#fff' },
     '& .RaLayout-content': { p: { xs: 2, md: 3.5 }, bgcolor: '#f4f6f8', minWidth: 0 },
   }} />;
 }

@@ -1,11 +1,11 @@
 import { Alert, Box, Typography } from '@mui/material';
-import { useState } from 'react';
 import { ArrayInput, AutocompleteInput, Create, DateTimeInput, Edit, FormDataConsumer, NumberInput, ReferenceInput,
   SelectInput, SimpleForm, SimpleFormIterator, TextInput, required, useLocaleState, usePermissions,
   useResourceContext, useTranslate, Toolbar, SaveButton, useNotify } from 'react-admin';
 import { billingChoices, billingFields, decimalToHundredths, formatHundredths, isBillingResource } from '@wafou/domain';
 import { supabase } from './supabase';
 import { money } from './components';
+import { PreviewFormObserver, previewErrorMessage, usePreviewState } from './previewState';
 
 function SaveOnly() { return <Toolbar><SaveButton /></Toolbar>; }
 const optional = (value: unknown) => value === '' || value === undefined ? null : value;
@@ -61,21 +61,21 @@ type Preview = { issues:string[]; currency:string; pricing_complete:boolean; sub
   fees:{rule:{id:string;name_fr:string;name_en:string;payer:string;version:number};amount_minor:number}[] };
 export function PricingPreview() {
   const t=useTranslate(); const [locale]=useLocaleState(); const notify=useNotify();
-  const [result,setResult]=useState<Preview|null>(null); const [loading,setLoading]=useState(false);
+  const {result,loading,invalidate,run}=usePreviewState<Preview>();
   const { permissions=[] }=usePermissions<string[]>();
   if (!permissions.includes('catalog.read') || !permissions.includes('finance.read')) return <Alert severity="warning">{t('app.errors.accessDenied')}</Alert>;
   async function simulate(data: Record<string,unknown>) {
-    setLoading(true); setResult(null);
-    try {
+    await run(async()=>{
       const { data:preview,error }=await supabase.rpc('admin_pricing_preview',{p_cart:data});
-      if(error) { notify('billing.errors.invalid',{type:'error'}); return; }
-      setResult(preview as Preview);
-    } finally { setLoading(false); }
+      if(error) throw error;
+      return preview as Preview;
+    },error=>notify(previewErrorMessage(error),{type:'error'}));
   }
   return <Box sx={{maxWidth:1000,pb:4}}>
     <Typography variant="h4" component="h1" sx={{mb:2}}>{t('billing.preview')}</Typography>
     <Alert severity="info" sx={{mb:2}}>{t('billing.previewNotice')}</Alert>
     <SimpleForm onSubmit={simulate} toolbar={<Toolbar><SaveButton label={t('billing.simulate')} disabled={loading} alwaysEnable /></Toolbar>}>
+      <FormDataConsumer>{({formData})=><PreviewFormObserver data={formData} onChange={invalidate} />}</FormDataConsumer>
       <ReferenceChoice source="service_id" />
       <FormDataConsumer>{({formData}) => <Box sx={{width:'100%'}}>
         <ReferenceChoice source="cleaning_type_id" serviceId={formData.service_id} />

@@ -35,6 +35,6 @@ const app = {
 
 export const i18nProvider = polyglotI18nProvider(locale => {
   const selected = locale === 'en' ? 'en' : 'fr';
-  return { ...(selected === 'fr' ? frenchMessages : englishMessages), shop:shopMessages[selected], accounts:accountMessages[selected], billing: billingMessages[selected], app: { ...app[selected], states:{...app[selected].states,suspended:accountMessages[selected].suspended}, fields: {...fields[selected],...billingMessages[selected].fields,...shopMessages[selected].fields} },
+  return { ...(selected === 'fr' ? frenchMessages : englishMessages), shop:shopMessages[selected], accounts:accountMessages[selected], billing: billingMessages[selected], app: { ...app[selected], states:{...app[selected].states,archived:billingMessages[selected].choices.archived,suspended:accountMessages[selected].suspended}, fields: {...fields[selected],...billingMessages[selected].fields,...shopMessages[selected].fields,status:fields[selected].status} },
     resources: Object.fromEntries(Object.keys(resources).map((key, index) => [key, { name: billingResourceNames[selected][key] ?? names[selected][index] }])) };
 }, localStorage.getItem('wafou-admin-locale') === 'en' ? 'en' : 'fr');

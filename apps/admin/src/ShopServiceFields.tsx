@@ -18,14 +18,16 @@ export function ShopServiceFields() {
   <FormDataConsumer>{({formData})=>formData.id ? <ReferenceArrayInput source="included_task_ids" reference="catalog_components" filter={{service_id:formData.id,kind:'task'}} perPage={100}>
    <AutocompleteArrayInput label={t('shop.fields.included_task_ids')} optionText={locale==='en'?'name_en':'name_fr'} fullWidth />
   </ReferenceArrayInput>:<Alert severity="info" sx={{mb:2}}>{t('shop.tasksAfterSave')}</Alert>}</FormDataConsumer>
-  <Alert severity="info" sx={{mb:2}}>{t('shop.bundleHelp')}</Alert>
-  <ArrayInput source="bundle_items" label={t('shop.fields.bundle_items')}>
+  <FormDataConsumer>{({formData})=>(formData.offer_kind==='bundle'||formData.bundle_items?.length>0)?<Box>
+   <Alert severity="info" sx={{mb:2}}>{t('shop.bundleHelp')}</Alert>
+   <ArrayInput source="bundle_items" label={t('shop.fields.bundle_items')}>
    <SimpleFormIterator resource="services" inline>
     <ReferenceInput source="service_id" reference="services" filter={{shop_enabled:true,offer_kind:'individual'}} perPage={100}>
      <AutocompleteInput label={t('billing.fields.service_id')} optionText={locale==='en'?'name_en':'name_fr'} filterToQuery={q=>({q})} validate={required()} />
     </ReferenceInput>
     <NumberInput source="quantity" label={t('billing.fields.quantity')} min={0.001} max={100000} step={0.001} validate={required()} />
    </SimpleFormIterator>
-  </ArrayInput>
+   </ArrayInput>
+  </Box>:null}</FormDataConsumer>
  </Box>;
 }

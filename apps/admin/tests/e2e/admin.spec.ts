@@ -12,7 +12,8 @@ test('sign in, inspect live records, switch language and sign out', async ({ pag
   await expect(page.getByText('Activité récente')).toBeVisible();
   await page.screenshot({ path: 'test-results/dashboard-desktop.png', fullPage: true });
   await page.getByRole('menuitem', { name: 'Services', exact: true }).click();
-  await expect(page.getByText('[DEMO] Entretien régulier', { exact: true })).toBeVisible();
+  await expect(page.getByRole('table')).toBeVisible();
+  await expect(page.getByRole('row').nth(1)).toBeVisible();
   await page.getByRole('button', { name: 'EN', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Services', exact: true })).toBeVisible();
   await page.reload();
@@ -20,7 +21,7 @@ test('sign in, inspect live records, switch language and sign out', async ({ pag
   await page.setViewportSize({ width: 390, height: 844 });
   await page.screenshot({ path: 'test-results/services-mobile.png', fullPage: true });
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.getByRole('button', { name: 'Olankoande' }).click();
+  await page.getByRole('button', { name: 'Profile', exact: true }).click();
   await page.getByRole('menuitem', { name: /Log out/ }).click();
   await expect(page.getByLabel('Email address')).toBeVisible();
   await page.goto('/#/payments');

@@ -45,3 +45,20 @@ test('account reader has no activation controls',async({page})=>{
  const calls=await setup(page,false);
  await expect(page.getByRole('button',{name:'Désactiver le compte',exact:true})).toHaveCount(0);expect(calls).toHaveLength(0);
 });
+
+test('account status retry retains its request key after a network failure',async({page})=>{
+ await setup(page);const requests:any[]=[];
+ await page.route('https://supabase.kikandi.com/rest/v1/rpc/admin_set_account_status',async route=>{
+  requests.push(route.request().postDataJSON());
+  if(requests.length===1)await route.abort('failed');else await route.fallback();
+ });
+ const row=page.getByRole('row').filter({hasText:'Compte test'});
+ await row.getByRole('button',{name:'Désactiver le compte',exact:true}).click();
+ await page.getByRole('textbox',{name:'Motif',exact:true}).fill('Reprise de recette');
+ await page.getByRole('button',{name:'Confirmer',exact:true}).click();
+ await expect.poll(()=>requests.length).toBe(1);
+ await expect(page.getByRole('button',{name:'Confirmer',exact:true})).toBeEnabled();
+ await page.getByRole('button',{name:'Confirmer',exact:true}).click();
+ await expect(row.getByRole('button',{name:'Activer le compte',exact:true})).toBeVisible();
+ expect(requests).toHaveLength(2);expect(requests[1].p_request_id).toBe(requests[0].p_request_id);
+});

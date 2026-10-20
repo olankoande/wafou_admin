@@ -10,13 +10,14 @@ import CleaningServicesOutlined from '@mui/icons-material/CleaningServicesOutlin
 import ReceiptLongOutlined from '@mui/icons-material/ReceiptLongOutlined';
 import { supabase } from './supabase';
 import { money, Status } from './components';
+import { formatDate } from './formatDate';
 
 interface Overview {
   profiles?: number; providers?: number; services?: number; requests?: number; bookings?: number; missions?: number; payments?: number; disputes?: number;
   generated_at: string;
   booking_statuses?: { status: string; count: number }[];
   finance?: { currency: string; captured_minor: string; refunded_minor: string }[];
-  recent_requests?: { id: string; client: string; service: string; status: string; requested_start: string }[];
+  recent_requests?: { id: string; client: string; service: string; status: string; requested_start: string|null }[];
 }
 
 export function Dashboard() {
@@ -27,9 +28,10 @@ export function Dashboard() {
   const [loading, setLoading] = useState(false);
   const load = useCallback(async () => {
     setLoading(true); setError(false);
-    const result = await supabase.rpc('admin_dashboard');
-    if (result.error) setError(true); else setData(result.data as Overview);
-    setLoading(false);
+    try {
+      const result = await supabase.rpc('admin_dashboard');
+      if (result.error) setError(true); else setData(result.data as Overview);
+    } catch { setError(true); } finally { setLoading(false); }
   }, []);
   useEffect(() => { void load(); }, [load]);
   const metrics = [
@@ -58,7 +60,7 @@ export function Dashboard() {
         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ p: 2.5 }}><Typography variant="h6">{t('app.activity')}</Typography>{data?.recent_requests && <Button component={Link} to="/service_requests" size="small" endIcon={<ArrowForwardRounded />}>{t('resources.service_requests.name')}</Button>}</Stack>
         <Divider />
         <Box sx={{ overflowX: 'auto' }}><Table size="small"><TableHead><TableRow><TableCell>{t('app.fields.client_id')}</TableCell><TableCell>{t('app.fields.service_id')}</TableCell><TableCell>{t('app.fields.status')}</TableCell></TableRow></TableHead>
-          <TableBody>{data?.recent_requests?.map(row => <TableRow key={row.id} hover><TableCell><Typography variant="body2" sx={{ fontWeight: 650 }}>{row.client}</Typography><Typography variant="caption" color="text.secondary">{new Intl.DateTimeFormat(locale === 'fr' ? 'fr-CA' : 'en-CA', { dateStyle: 'medium', timeZone: 'America/Toronto' }).format(new Date(row.requested_start))}</Typography></TableCell><TableCell><Link className="record-link" to={`/service_requests/${row.id}/show`}>{row.service}</Link></TableCell><TableCell><Status value={row.status} /></TableCell></TableRow>)}</TableBody></Table></Box>
+          <TableBody>{data?.recent_requests?.map(row => <TableRow key={row.id} hover><TableCell><Typography variant="body2" sx={{ fontWeight: 650 }}>{row.client}</Typography><Typography variant="caption" color="text.secondary">{formatDate(row.requested_start,locale)}</Typography></TableCell><TableCell><Link className="record-link" to={`/service_requests/${row.id}/show`}>{row.service}</Link></TableCell><TableCell><Status value={row.status} /></TableCell></TableRow>)}</TableBody></Table></Box>
         {!data?.recent_requests?.length && <Typography sx={{ p: 4 }} color="text.secondary">{t('app.noActivity')}</Typography>}
       </Card>
       <Stack gap={3}>
