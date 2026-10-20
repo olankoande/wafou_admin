@@ -4,6 +4,8 @@ La boutique de services, ses icônes, forfaits et règles de panier sont décrit
 
 La [revue du module admin](docs/ADMIN_REVIEW.md) décrit les corrections et les contrôles des écrans FR/EN et mobiles.
 
+La [fiche service](docs/ADMIN_SERVICE_WORKSPACE.md) regroupe Informations, Tarifs, Tâches comprises, Options et Compatibilités. Les zones restent accessibles dans **Zones d’intervention**.
+
 ## Module admin — publication GitHub du 19 octobre 2026
 
 Ce dépôt publie `apps/admin` et son package partagé `packages/domain`, en conservant l'organisation monorepo pnpm. Le module utilise React-Admin, Vite et TypeScript, avec authentification Supabase et permissions contrôlées côté serveur. L'admin permet de paramétrer les services, pièces, options, tâches, tarifs et frais de plateforme, de consulter leurs versions et de simuler un prix avant taxes. Les autres ressources métier restent consultables selon habilitation.
@@ -31,3 +33,7 @@ pnpm build
 Le serveur local écoute sur `http://127.0.0.1:5174` ; le build est produit dans `apps/admin/dist`. Les comptes admin doivent déjà être provisionnés ; le backend doit disposer du socle WAFOU et des migrations de catalogue documentées dans le guide. Le frontend n'applique aucune migration et ne provisionne aucun compte.
 
 Les migrations additives et tests SQL de catalogue accompagnent le module. Les scripts VPS, sauvegardes, données privées, spécifications internes, fichiers .env et bundles compilés sont exclus de la publication.
+
+## Photos des comptes et prestataires
+
+Le [guide photos et informations prestataire](docs/ADMIN_PHOTOS_KYC.md) décrit les photos privées facultatives, les droits et les capacités préparées pour le futur frontend. Aucune pièce d’identité n’est demandée pour le moment.

@@ -9,7 +9,7 @@ END $$;
 SELECT pg_temp.assert_true((SELECT count(*)=42 FROM pg_tables WHERE schemaname='public'),'42 WAFOU tables including configurable billing');
 SELECT pg_temp.assert_true(NOT EXISTS(SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
  WHERE n.nspname='public' AND c.relkind='r' AND (NOT c.relrowsecurity OR NOT c.relforcerowsecurity)), 'all public tables RLS + FORCE');
-SELECT pg_temp.assert_true((SELECT count(*)=2 AND bool_and(NOT public) FROM storage.buckets WHERE id LIKE 'wafou-%'),'two private buckets');
+SELECT pg_temp.assert_true((SELECT count(*)=3 AND bool_and(NOT public) FROM storage.buckets WHERE id LIKE 'wafou-%'),'three private buckets including profile photos');
 SELECT pg_temp.assert_true(NOT EXISTS(SELECT 1 FROM wafou_private.business_configuration WHERE approved_at IS NOT NULL),'no invented approved business rules');
 SELECT pg_temp.assert_true(NOT has_schema_privilege('anon','wafou_private','USAGE'),'anonymous cannot access private schema');
 SELECT pg_temp.assert_true(NOT has_table_privilege('authenticated','public.user_roles','INSERT'),'no self role assignment');

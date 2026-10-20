@@ -17,7 +17,7 @@ function AdminMenu() {
     <Menu.DashboardItem primaryText={t('app.overview')} />
     {permissions.includes('catalog.read') && permissions.includes('finance.read') && <Menu.Item to="/pricing-preview" primaryText={t('billing.preview')} leftIcon={<AccountBalanceWalletOutlined fontSize="small" />} />}
     {Object.entries(icons).map(([group, Icon]) => {
-      const entries = (Object.keys(resources) as ResourceName[]).filter(key => resources[key].group === group && permissions.includes(resources[key].permission));
+      const entries = (Object.keys(resources) as ResourceName[]).filter(key => !['catalog_components','catalog_links','catalog_rates'].includes(key) && resources[key].group === group && permissions.includes(resources[key].permission));
       if (!entries.length) return null;
       return <Box key={group} sx={{ mt: 2 }}>
         <Typography sx={{ fontSize: 9, fontWeight: 750, letterSpacing: 1.4, px: 2, py: 1.2, color: '#94aeb9' }}>{t(`app.groups.${group}`)}</Typography>
@@ -35,6 +35,7 @@ function AdminAppBar() {
 }
 export function AdminLayout(props: LayoutProps) {
   return <Layout {...props} appBar={AdminAppBar} menu={AdminMenu} sx={{
+    minWidth:0,
     '& .RaSidebar-fixed': { bgcolor: '#173443', color: '#e3edf1', minHeight: 'calc(100vh - 72px)', pb: 4 },
     '& .RaMenuItemLink-root': { color: '#d8e6ed', fontSize: 12.5, minHeight: 37, borderRadius: 1.5, mb: .3 },
     '& .RaMenuItemLink-root .MuiListItemIcon-root': { color: '#8eabb9', minWidth: 32 },

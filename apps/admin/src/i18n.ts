@@ -5,6 +5,8 @@ import { resources } from '@wafou/domain';
 import { billingMessages, billingResourceNames } from './billingI18n';
 import { accountMessages } from './accountI18n';
 import { shopMessages } from './shopI18n';
+import { serviceWorkspaceMessages } from './serviceWorkspaceI18n';
+import {profilePhotoMessages} from './profilePhotoI18n';
 
 const names = {
   fr: ['Utilisateurs', 'Prestataires', 'Services', 'Zones de service', 'Demandes', 'Devis', 'Attributions', 'Réservations', 'Missions', 'Paiements', 'Remboursements', 'Transferts', 'Versements', 'Mouvements financiers', 'Avis', 'Litiges', 'Conversations', 'Journal d’audit'],
@@ -35,6 +37,6 @@ const app = {
 
 export const i18nProvider = polyglotI18nProvider(locale => {
   const selected = locale === 'en' ? 'en' : 'fr';
-  return { ...(selected === 'fr' ? frenchMessages : englishMessages), shop:shopMessages[selected], accounts:accountMessages[selected], billing: billingMessages[selected], app: { ...app[selected], states:{...app[selected].states,archived:billingMessages[selected].choices.archived,suspended:accountMessages[selected].suspended}, fields: {...fields[selected],...billingMessages[selected].fields,...shopMessages[selected].fields,status:fields[selected].status} },
-    resources: Object.fromEntries(Object.keys(resources).map((key, index) => [key, { name: billingResourceNames[selected][key] ?? names[selected][index] }])) };
+  return { ...(selected === 'fr' ? frenchMessages : englishMessages), photo:profilePhotoMessages[selected], serviceWorkspace:serviceWorkspaceMessages[selected], shop:shopMessages[selected], accounts:accountMessages[selected], billing: billingMessages[selected], app: { ...app[selected], states:{...app[selected].states,archived:billingMessages[selected].choices.archived,suspended:accountMessages[selected].suspended}, fields: {...fields[selected],...billingMessages[selected].fields,...shopMessages[selected].fields,status:fields[selected].status} },
+    resources: Object.fromEntries(Object.keys(resources).map((key, index) => [key, { name: key==='service_areas'?(selected==='fr'?'Zones d’intervention':'Intervention areas'):billingResourceNames[selected][key] ?? names[selected][index] }])) };
 }, localStorage.getItem('wafou-admin-locale') === 'en' ? 'en' : 'fr');

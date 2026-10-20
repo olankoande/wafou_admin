@@ -7,7 +7,7 @@ import { supabase } from './supabase';
 import { money } from './components';
 import { PreviewFormObserver, previewErrorMessage, usePreviewState } from './previewState';
 
-function SaveOnly() { return <Toolbar><SaveButton /></Toolbar>; }
+function SaveOnly({embedded=false,saving=false}:{embedded?:boolean;saving?:boolean}) { return <Toolbar sx={embedded?{'&.RaToolbar-mobileToolbar':{position:'static',width:'100%'}}:undefined}><SaveButton disabled={saving}/></Toolbar>; }
 const optional = (value: unknown) => value === '' || value === undefined ? null : value;
 const numeric = (value: unknown) => value === '' || value === null || value === undefined ? null : Number(value);
 const dateTime = (value: string | null) => value ? new Date(value).toISOString() : null;
@@ -41,14 +41,14 @@ function ParameterField({ source, serviceId, editing, resource }: { source: stri
   return <TextInput source={source} label={label} fullWidth multiline={source.startsWith('description_') || source.startsWith('equipment_')}
     validate={['slug','name_fr','name_en'].includes(source) ? required() : undefined} />;
 }
-function BillingForm({ editing = false }: { editing?: boolean }) {
+export function BillingForm({ editing = false, onSubmit, defaults={}, hiddenFields=[], saving=false }: { editing?: boolean; onSubmit?:(data:Record<string,unknown>)=>Promise<void>; defaults?:Record<string,unknown>; hiddenFields?:string[]; saving?:boolean }) {
   const resource = useResourceContext(); const t = useTranslate();
   if (!resource || !isBillingResource(resource) || resource === 'configuration_revisions') return null;
-  return <SimpleForm toolbar={<SaveOnly />} defaultValues={{ status:'draft', ...(resource==='catalog_components' ? {min_quantity:1,quantity_step:1,sort_order:0} : {}) }} sx={{ p:{xs:2,md:4},maxWidth:960 }}>
+  return <SimpleForm onSubmit={onSubmit} toolbar={<SaveOnly embedded={!!onSubmit} saving={saving}/>} defaultValues={{ status:'draft', ...(resource==='catalog_components' ? {min_quantity:1,quantity_step:1,sort_order:0} : {}),...defaults }} sx={{ p:{xs:2,md:4},maxWidth:960 }}>
     <Alert severity="info" sx={{mb:3}}>{t('billing.configurationNotice')}</Alert>
     {resource==='platform_fee_rules' && <Alert severity="warning" sx={{mb:3}}>{t('billing.feeNotice')}</Alert>}
     <FormDataConsumer>{({ formData }) => <Box sx={{width:'100%'}}>
-      {billingFields[resource].map(source => <ParameterField key={source} source={source} resource={resource} serviceId={formData.service_id} editing={editing} />)}
+      {billingFields[resource].filter(source=>!hiddenFields.includes(source)).map(source => <ParameterField key={source} source={source} resource={resource} serviceId={formData.service_id} editing={editing} />)}
     </Box>}</FormDataConsumer>
     <TextInput source="change_reason" label={t('billing.fields.change_reason')} validate={required()} fullWidth multiline helperText={t('billing.reasonHelp')} />
   </SimpleForm>;

@@ -4,6 +4,8 @@ import { isResource, resources, mayAccess } from '@wafou/domain';
 import { RecordField } from './components';
 import { AccountStatusAction } from './AccountStatusAction';
 import { ShopServiceFields } from './ShopServiceFields';
+import { ServiceWorkspace } from './ServiceWorkspace';
+import {ProviderKyc,ProfilePhotoField} from './ProviderKyc';
 
 function useDefinition() {
   const resource = useResourceContext();
@@ -32,7 +34,10 @@ export function ResourceShow() {
   const { resource,def } = useDefinition();
   const t = useTranslate();
   const fields = [...new Set(['id', ...def.fields, ...def.detail])];
+  if(resource==='services')return <Show sx={{minWidth:0,'& .RaShow-main':{minWidth:0},'& .RaShow-card':{minWidth:0}}}><ServiceWorkspace/></Show>;
   return <Show><SimpleShowLayout sx={{ p: { xs: 2, md: 4 }, maxWidth: 980 }}>
+    {resource==='profiles'&&<ProfilePhotoField/>}
+    {resource==='provider_profiles'&&<ProviderKyc/>}
     {fields.map(source => <RecordField key={source} source={source} detail label={t(`app.fields.${source}`, { _: source })} />)}
     {resource==='profiles' && <AccountStatusAction />}
   </SimpleShowLayout></Show>;

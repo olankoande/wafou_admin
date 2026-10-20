@@ -1,5 +1,7 @@
 # Administration du catalogue, des tarifs et des frais
 
+Navigation courante : les composants, associations et tarifs se gèrent depuis la [fiche service](ADMIN_SERVICE_WORKSPACE.md). Les intitulés d’écrans historiques ci-dessous désignent les mêmes ressources conservées ; ils ne correspondent plus à trois entrées séparées du menu.
+
 Le modèle courant est une boutique : [guide boutique](ADMIN_SHOP.md). Les fiches disposent d'icônes, d'unités/quantités et de forfaits ; la simulation multi-services complète le simulateur historique décrit ci-dessous. Le forfait global historique vaut pour une composition, le prix fixe boutique vaut pour une unité d'offre. Les deux modes conservent leurs règles distinctes.
 
 ## Écrans disponibles

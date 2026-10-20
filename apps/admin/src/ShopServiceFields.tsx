@@ -1,5 +1,5 @@
 import { Alert, Box, Typography } from '@mui/material';
-import { ArrayInput, AutocompleteArrayInput, AutocompleteInput, BooleanInput, FormDataConsumer, NumberInput, ReferenceArrayInput, ReferenceInput, SelectInput, SimpleFormIterator, TextInput, required, useLocaleState, useTranslate } from 'react-admin';
+import { ArrayInput, AutocompleteInput, BooleanInput, FormDataConsumer, NumberInput, ReferenceInput, SelectInput, SimpleFormIterator, TextInput, required, useLocaleState, useTranslate } from 'react-admin';
 import { billingChoices, serviceIconKeys } from '@wafou/domain';
 import { ServiceIcon } from './ServiceIcon';
 
@@ -15,9 +15,7 @@ export function ShopServiceFields() {
   <SelectInput source="unit" label={t('billing.fields.unit')} choices={billingChoices.unit.map(id=>({id,name:t(`billing.choices.${id}`)}))} validate={required()} fullWidth />
   {['min_quantity','max_quantity','quantity_step','sort_order'].map(source=><NumberInput key={source} source={source} label={t(`billing.fields.${source}`)} min={source==='min_quantity'||source==='quantity_step'?0.001:0} max={100000} step={source==='sort_order'?1:0.001} validate={source==='max_quantity'?undefined:required()} fullWidth />)}
   {['included_fr','included_en','excluded_fr','excluded_en'].map(source=><TextInput key={source} source={source} label={t(`shop.fields.${source}`)} multiline fullWidth />)}
-  <FormDataConsumer>{({formData})=>formData.id ? <ReferenceArrayInput source="included_task_ids" reference="catalog_components" filter={{service_id:formData.id,kind:'task'}} perPage={100}>
-   <AutocompleteArrayInput label={t('shop.fields.included_task_ids')} optionText={locale==='en'?'name_en':'name_fr'} fullWidth />
-  </ReferenceArrayInput>:<Alert severity="info" sx={{mb:2}}>{t('shop.tasksAfterSave')}</Alert>}</FormDataConsumer>
+  <Alert severity="info" sx={{mb:2}}>{t('serviceWorkspace.afterSave')}</Alert>
   <FormDataConsumer>{({formData})=>(formData.offer_kind==='bundle'||formData.bundle_items?.length>0)?<Box>
    <Alert severity="info" sx={{mb:2}}>{t('shop.bundleHelp')}</Alert>
    <ArrayInput source="bundle_items" label={t('shop.fields.bundle_items')}>

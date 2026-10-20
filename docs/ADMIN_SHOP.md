@@ -1,5 +1,7 @@
 # Administration de la boutique de services
 
+La configuration se fait désormais depuis la [fiche service à cinq onglets](ADMIN_SERVICE_WORKSPACE.md). Les menus séparés de composants, compatibilités et tarifs sont regroupés dans cette fiche ; **Zones d’intervention** reste un menu distinct.
+
 ## Fiches et icônes
 
 Dans **Services**, créer une fiche FR/EN, choisir **Proposer en boutique**, une icône et le type d'offre : service individuel ou forfait. Définir unité, quantités minimale/maximale, pas, ordre et prestations comprises/exclues. L'aperçu affiche l'icône avec le nom traduit.
@@ -12,7 +14,7 @@ Pour retirer un article, décocher sa disponibilité ou choisir **Retiré**. L'h
 
 ## Tâches, options et forfaits
 
-Après enregistrement, créer les tâches/options dans **Pièces, options et types**, rattachées au service. Choisir ensuite les tâches comprises dans sa fiche. Les relations existantes précisent inclusions/exclusions, incompatibilités et options requises. Une option ne peut pas appartenir à un autre service.
+Après enregistrement, créer les tâches dans l’onglet **Tâches comprises**, puis sélectionner et enregistrer celles incluses dans la prestation. Créer les suppléments dans **Options** et définir leurs relations dans **Compatibilités**. Tous ces éléments sont rattachés au service ouvert.
 
 Un forfait contient des services individuels et leurs quantités par unité de forfait. Les forfaits imbriqués sont refusés. Le prix du forfait est indépendant des prix de ses membres. Un forfait et son membre, ou deux forfaits qui se recouvrent, bloquent le chiffrage ; aucune réduction ou suppression de quantité n'est décidée silencieusement.
 
@@ -22,7 +24,7 @@ La composition de forfait apparaît lorsque l'offre est un forfait. Si un forfai
 
 ## Tarifs et frais
 
-Dans **Tarifs des prestations**, choisir le service et laisser **Pièce ou option** vide pour son prix principal. Un prix fixe boutique vaut pour une unité d'offre et est multiplié par sa quantité. L'unité du tarif doit correspondre à celle de la fiche. Configurer les options séparément.
+Dans l’onglet **Tarifs**, le service est renseigné automatiquement. Laisser **Pièce ou option** vide pour son prix principal. Un prix fixe boutique vaut pour une unité d’offre et est multiplié par sa quantité. L’unité du tarif doit correspondre à celle de la fiche. Configurer les options séparément.
 
 Pour un tarif horaire : unité **Heure**, quantité et nombre d'heures identiques dans la simulation. Aucune durée automatique. Un devis reste sans total calculable ; une absence de tarif ou de frais ne devient pas zéro.
 
